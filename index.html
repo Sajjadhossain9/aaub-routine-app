@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Personal AAUB class routine, lab report and exam preparation tracker.">
+  <title>FlightPlan - AAUB Routine</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">AAUB · AVIONICS 04</p>
+        <h1><span class="brand-mark">FP</span> FlightPlan</h1>
+      </div>
+      <div class="header-actions">
+        <button class="icon-button" id="themeToggle" aria-label="Toggle colour theme" title="Toggle theme">☾</button>
+        <button class="icon-button notification-button" id="reminderButton" aria-label="Open reminders" title="Reminders">♢<span id="reminderBadge" hidden>0</span></button>
+      </div>
+    </header>
+
+    <main id="mainContent">
+      <section class="view active" id="todayView" data-view="today">
+        <div class="date-hero">
+          <div>
+            <p class="eyebrow" id="semesterLabel">SEMESTER 05</p>
+            <h2 id="selectedDayName">Tuesday</h2>
+            <p class="muted" id="selectedDateLabel"></p>
+          </div>
+          <div class="week-chip" id="weekChip">WEEK 2</div>
+        </div>
+
+        <div class="day-switcher" aria-label="Choose date">
+          <button id="previousDay" aria-label="Previous day">←</button>
+          <button class="date-button" id="datePickerButton"><span id="dateButtonText">Today</span><small>Pick a date</small></button>
+          <input type="date" id="datePicker" class="visually-hidden" aria-label="Pick a date">
+          <button id="nextDay" aria-label="Next day">→</button>
+        </div>
+
+        <article class="next-class" id="nextClassCard" hidden>
+          <div>
+            <p class="eyebrow">UP NEXT</p>
+            <h3 id="nextClassTitle"></h3>
+            <p id="nextClassMeta"></p>
+          </div>
+          <div class="countdown" id="nextClassCountdown"></div>
+        </article>
+
+        <div class="section-heading">
+          <div><p class="eyebrow">DAILY BRIEF</p><h2>Today's schedule</h2></div>
+          <button class="text-button" id="jumpToday">Today</button>
+        </div>
+        <div id="daySchedule" class="timeline"></div>
+      </section>
+
+      <section class="view" id="weekView" data-view="week">
+        <div class="section-heading page-heading">
+          <div><p class="eyebrow">SEMESTER MAP</p><h2>Weekly routine</h2></div>
+          <div class="week-controls"><button id="previousWeek" aria-label="Previous week">←</button><span id="weekLabel"></span><button id="nextWeek" aria-label="Next week">→</button></div>
+        </div>
+        <div id="weekTabs" class="week-tabs"></div>
+        <div id="weekSchedule" class="week-grid"></div>
+      </section>
+
+      <section class="view" id="tasksView" data-view="tasks">
+        <div class="section-heading page-heading">
+          <div><p class="eyebrow">SESSIONAL WORK</p><h2>Lab reports</h2></div>
+          <button class="primary-button small" id="addTaskButton">+ Add</button>
+        </div>
+        <div class="stats-grid" id="taskStats"></div>
+        <div class="filter-row" id="taskFilters">
+          <button class="filter active" data-filter="upcoming">Upcoming</button>
+          <button class="filter" data-filter="all">All</button>
+          <button class="filter" data-filter="completed">Completed</button>
+        </div>
+        <div id="taskList" class="card-list"></div>
+      </section>
+
+      <section class="view" id="examsView" data-view="exams">
+        <div class="section-heading page-heading">
+          <div><p class="eyebrow">ASSESSMENTS</p><h2>Exam readiness</h2></div>
+          <button class="primary-button small" id="addExamButton">+ Add</button>
+        </div>
+        <div id="examReadiness" class="readiness-card"></div>
+        <div class="filter-row" id="examFilters">
+          <button class="filter active" data-filter="upcoming">Upcoming</button>
+          <button class="filter" data-filter="all">All</button>
+          <button class="filter" data-filter="ct">CT</button>
+          <button class="filter" data-filter="mid">MID</button>
+        </div>
+        <div id="examList" class="card-list"></div>
+      </section>
+
+      <section class="view" id="settingsView" data-view="settings">
+        <div class="page-heading"><p class="eyebrow">CONTROL PANEL</p><h2>Settings</h2></div>
+        <div class="settings-list">
+          <article class="setting-card">
+            <div><h3>Notifications</h3><p>Due reminders appear in the app. Browser alerts work while supported.</p></div>
+            <button class="primary-button" id="enableNotifications">Enable</button>
+          </article>
+          <article class="setting-card stacked">
+            <div><h3>Reminder times</h3><p>Choose when daily checks should appear.</p></div>
+            <label>Morning reminder <input type="time" id="morningTime" value="07:00"></label>
+            <label>Exam readiness <input type="time" id="examTime" value="20:00"></label>
+            <button class="secondary-button" id="saveSettings">Save settings</button>
+          </article>
+          <article class="setting-card">
+            <div><h3>Add or reschedule class</h3><p>Create an extra class or a replacement for a cancelled one.</p></div>
+            <button class="secondary-button" id="addClassButton">Add class</button>
+          </article>
+          <article class="setting-card stacked">
+            <div><h3>Data backup</h3><p>Progress is stored only on this device. Export it before clearing browser data.</p></div>
+            <div class="button-row"><button class="secondary-button" id="exportData">Export JSON</button><button class="secondary-button" id="importData">Import JSON</button></div>
+            <input type="file" id="importFile" accept="application/json" hidden>
+          </article>
+          <article class="setting-card danger-zone">
+            <div><h3>Reset app data</h3><p>Remove preparation states, notes and custom entries.</p></div>
+            <button class="danger-button" id="resetData">Reset</button>
+          </article>
+          <p class="privacy-note">No account, analytics or cloud database. Your study data stays in this browser.</p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-item active" data-target="today"><span>⌂</span>Today</button>
+      <button class="nav-item" data-target="week"><span>▦</span>Week</button>
+      <button class="nav-item" data-target="tasks"><span>✓</span>Reports</button>
+      <button class="nav-item" data-target="exams"><span>◎</span>Exams</button>
+      <button class="nav-item" data-target="settings"><span>⚙</span>Settings</button>
+    </nav>
+  </div>
+
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <aside class="reminder-drawer" id="reminderDrawer" aria-hidden="true" aria-labelledby="reminderTitle">
+    <div class="drawer-header"><div><p class="eyebrow">INBOX</p><h2 id="reminderTitle">Reminders</h2></div><button class="icon-button" id="closeReminders" aria-label="Close reminders">×</button></div>
+    <div id="reminderList" class="reminder-list"></div>
+  </aside>
+
+  <dialog id="itemDialog">
+    <form method="dialog" id="itemForm">
+      <div class="dialog-header"><div><p class="eyebrow" id="dialogEyebrow">NEW ITEM</p><h2 id="dialogTitle">Add item</h2></div><button value="cancel" class="icon-button" aria-label="Close">×</button></div>
+      <div id="dialogFields" class="form-grid"></div>
+      <div class="dialog-actions"><button value="cancel" class="secondary-button">Cancel</button><button value="default" class="primary-button" id="dialogSave">Save</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="routine-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
